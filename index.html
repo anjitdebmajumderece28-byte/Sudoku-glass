@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎯 Sudoku Game</title>
+  <title>Sudoku Game</title>
   <style>
     * {
       box-sizing: border-box;
@@ -11,42 +11,44 @@
       padding: 0;
     }
 
-    body {
-      font-family: "Poppins", sans-serif;
-      min-height: 100vh;
-      background-color: #DCE1DE;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      overflow: hidden;
-    }
+body {
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  background-color: #281700; /* solid teal from your palette */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
+}
 
-    /* Sudoku translucent container */
+
+
     .container {
-      background: rgba(31, 36, 33, 0.85); /* translucent #1F2421 */
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 25px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 35px 25px;
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-    }
+  background-color: ;     /* low opacity white */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* soft diffused shadow */
+  backdrop-filter: blur(12px) saturate(180%); /* the real “frosted” effect */
+  -webkit-backdrop-filter: blur(12px) saturate(180%); /* Safari support */
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* thin glass edge line */
+  padding: 30px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
 
     h1 {
-      color: #DCE1DE;
+      color: #000000;
       text-align: center;
-      font-size: 1.9em;
+      font-size: 1.8em;
     }
 
     .subtitle {
-      color: #9CC5A1;
+      color: #555;
       text-align: center;
       font-size: 0.9em;
     }
@@ -54,82 +56,70 @@
     .lives {
       text-align: center;
       font-weight: bold;
-      color: #ff6b6b;
+      color: #e53935;
       font-size: 1.1em;
     }
 
-    /* FIXED GRID STYLING */
+    /* Perfectly responsive Sudoku grid */
     .sudoku-grid {
       display: grid;
       grid-template-columns: repeat(9, 1fr);
       width: 90vw;
       max-width: 420px;
       aspect-ratio: 1 / 1;
-      border: 3px solid #216869;
-      background: white;
-      border-radius: 10px;
+      border: 3px solid #333;
+      background: #333;
     }
 
     .sudoku-cell {
       border: 1px solid #999;
       text-align: center;
-      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-size: clamp(1rem, 2vw, 1.4rem);
       font-weight: 600;
-      color: #1F2421;
-      background: #DCE1DE;
+      color: #333;
+      background: white;
+      transition: background 0.2s;
       width: 100%;
       height: 100%;
-      transition: all 0.25s ease;
     }
 
     .sudoku-cell:focus {
       outline: none;
-      background: #9CC5A1;
-      color: #fff;
+      background: #e3f2fd;
     }
 
     .sudoku-cell.given {
-      background: #49A078;
-      color: #fff;
+      background: #f5f5f5;
+      color: #000;
       pointer-events: none;
-      font-weight: bold;
     }
 
     .sudoku-cell.correct {
-      background: #9CC5A1;
-      color: #fff;
+      background: #e8f5e9;
+      color: #2e7d32;
     }
 
     .sudoku-cell.wrong {
-      background: #ff6b6b;
-      color: #fff;
+      background: #ffebee;
+      color: #c62828;
       animation: shake 0.3s;
     }
 
     @keyframes shake {
       0% { transform: translateX(0); }
-      25% { transform: translateX(-3px); }
-      50% { transform: translateX(3px); }
-      75% { transform: translateX(-3px); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-4px); }
       100% { transform: translateX(0); }
     }
 
-    /* FIXED 3x3 BOX BORDERS */
-    .sudoku-cell {
-      border: 1px solid #999;
-    }
-
+    /* Thicker box borders */
     .sudoku-cell:nth-child(3n) {
-      border-right: 3px solid #216869;
+      border-right: 3px solid #333;
     }
-
-    .sudoku-cell:nth-child(9n + 1) {
-      border-left: 3px solid #216869;
-    }
-
     .sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
     .sudoku-cell:nth-child(n + 46):nth-child(-n + 54) {
-      border-bottom: 3px solid #216869;
+      border-bottom: 3px solid #333;
     }
 
     .button-group {
@@ -146,14 +136,16 @@
       font-size: 0.9em;
       padding: 10px 20px;
       color: white;
-      background-color: #216869;
-      transition: all 0.3s ease;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    button:hover {
-      background-color: #49A078;
+    .new-btn {
+      background: #ff9800;
+    }
+
+    .new-btn:hover {
+      background: #f57c00;
       transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .message {
@@ -168,25 +160,43 @@
     }
 
     .message.error {
-      background: rgba(255, 107, 107, 0.2);
-      color: #ff6b6b;
+      background: #ffebee;
+      color: #c62828;
       display: block;
     }
 
-    @media (max-width: 400px) {
-      body { padding: 10px; }
-
-      .container {
-        padding: 15px;
-        border-radius: 18px;
-      }
-
-      h1 { font-size: 1.4em; }
-
-      .sudoku-grid {
-        width: 95vw;
-      }
+   @media (max-width: 400px) {
+    body{
+        padding:10px;
     }
+  h1 {
+    font-size: 1.3em;
+  }
+
+  .container {
+    padding: 10px; /* reduced from 15px */
+    border-radius: 15px;
+  }
+
+  .sudoku-grid {
+    width: 95vw; /* let it use more width on small screens */
+    max-width: none; /* remove the cap */
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 0.85em;
+  }
+
+  .subtitle {
+    font-size: 0.8em;
+  }
+
+  .lives {
+    font-size: 1em;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -198,7 +208,7 @@
     <div class="sudoku-grid" id="sudokuGrid"></div>
 
     <div class="button-group">
-      <button onclick="newPuzzle()">New Puzzle</button>
+      <button class="new-btn" onclick="newPuzzle()">New Puzzle</button>
     </div>
 
     <div id="message" class="message"></div>
@@ -210,6 +220,7 @@
     let solution = [];
     let lives = 3;
 
+    // Generate a random Sudoku puzzle
     function generateRandomPuzzle() {
       board = Array(SIZE).fill().map(() => Array(SIZE).fill(0));
       for (let k = 0; k < SIZE; k += 3) fillBox(k, k);
