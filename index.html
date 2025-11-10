@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sudoku Game</title>
+  <title>🎯 Sudoku Game</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,45 +12,48 @@
     }
 
     body {
-  font-family: "Poppins", sans-serif;
-  min-height: 100vh;
-  background: 
-    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url("https://images.pexels.com/photos/388415/pexels-photo-388415.jpeg")
-    center/cover no-repeat;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  overflow: hidden;
-}
+      font-family: "Poppins", sans-serif;
+      min-height: 100vh;
+      background-color: #DCE1DE; /* soft off-white background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
 
-
+    /* Sudoku glass container */
     .container {
-  background: rgba(255, 255, 255, 0.18);     /* low opacity white */
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* soft diffused shadow */
-  backdrop-filter: blur(12px) saturate(180%); /* the real “frosted” effect */
-  -webkit-backdrop-filter: blur(12px) saturate(180%); /* Safari support */
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3); /* thin glass edge line */
-  padding: 30px;
-  width: 100%;
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
+      background: rgba(31, 36, 33, 0.85); /* #1F2421 translucent */
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 35px 25px;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
 
+    .container:hover {
+      transform: scale(1.01);
+      box-shadow: 0 12px 45px rgba(0, 0, 0, 0.4);
+    }
 
     h1 {
-      color: #000000;
+      color: #DCE1DE;
       text-align: center;
       font-size: 1.8em;
+      letter-spacing: 1px;
     }
 
     .subtitle {
-      color: #555;
+      color: #9CC5A1;
       text-align: center;
       font-size: 0.9em;
     }
@@ -58,52 +61,54 @@
     .lives {
       text-align: center;
       font-weight: bold;
-      color: #e53935;
+      color: #ff6b6b;
       font-size: 1.1em;
     }
 
-    /* Perfectly responsive Sudoku grid */
+    /* Sudoku grid */
     .sudoku-grid {
       display: grid;
       grid-template-columns: repeat(9, 1fr);
       width: 90vw;
       max-width: 420px;
       aspect-ratio: 1 / 1;
-      border: 3px solid #333;
-      background: #333;
+      border: 3px solid #9CC5A1;
+      background: #9CC5A1;
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     .sudoku-cell {
-      border: 1px solid #999;
+      border: 1px solid #ccc;
       text-align: center;
       font-size: clamp(1rem, 2vw, 1.4rem);
       font-weight: 600;
-      color: #333;
-      background: white;
-      transition: background 0.2s;
-      width: 100%;
-      height: 100%;
+      color: #1F2421;
+      background: #DCE1DE;
+      transition: all 0.25s ease;
     }
 
     .sudoku-cell:focus {
       outline: none;
-      background: #e3f2fd;
+      background: #9CC5A1;
+      color: #fff;
     }
 
     .sudoku-cell.given {
-      background: #f5f5f5;
-      color: #000;
+      background: #49A078;
+      color: #fff;
       pointer-events: none;
+      font-weight: bold;
     }
 
     .sudoku-cell.correct {
-      background: #e8f5e9;
-      color: #2e7d32;
+      background: #9CC5A1;
+      color: #fff;
     }
 
     .sudoku-cell.wrong {
-      background: #ffebee;
-      color: #c62828;
+      background: #ff6b6b;
+      color: #fff;
       animation: shake 0.3s;
     }
 
@@ -117,11 +122,11 @@
 
     /* Thicker box borders */
     .sudoku-cell:nth-child(3n) {
-      border-right: 3px solid #333;
+      border-right: 3px solid #9CC5A1;
     }
     .sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
     .sudoku-cell:nth-child(n + 46):nth-child(-n + 54) {
-      border-bottom: 3px solid #333;
+      border-bottom: 3px solid #9CC5A1;
     }
 
     .button-group {
@@ -136,18 +141,16 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 0.9em;
-      padding: 10px 20px;
+      padding: 10px 24px;
       color: white;
-      transition: transform 0.2s, box-shadow 0.2s;
+      background-color: #216869; /* teal green */
+      transition: all 0.3s ease;
     }
 
-    .new-btn {
-      background: #ff9800;
-    }
-
-    .new-btn:hover {
-      background: #f57c00;
+    button:hover {
+      background-color: #49A078;
       transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .message {
@@ -162,43 +165,44 @@
     }
 
     .message.error {
-      background: #ffebee;
-      color: #c62828;
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
       display: block;
     }
 
-   @media (max-width: 400px) {
-    body{
-        padding:10px;
+    @media (max-width: 400px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 15px;
+        border-radius: 15px;
+        max-width: 95vw;
+      }
+
+      h1 {
+        font-size: 1.3em;
+      }
+
+      .sudoku-grid {
+        width: 95vw;
+        max-width: none;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 0.85em;
+      }
+
+      .subtitle {
+        font-size: 0.8em;
+      }
+
+      .lives {
+        font-size: 1em;
+      }
     }
-  h1 {
-    font-size: 1.3em;
-  }
-
-  .container {
-    padding: 10px; /* reduced from 15px */
-    border-radius: 15px;
-  }
-
-  .sudoku-grid {
-    width: 95vw; /* let it use more width on small screens */
-    max-width: none; /* remove the cap */
-  }
-
-  button {
-    padding: 8px 16px;
-    font-size: 0.85em;
-  }
-
-  .subtitle {
-    font-size: 0.8em;
-  }
-
-  .lives {
-    font-size: 1em;
-  }
-}
-
   </style>
 </head>
 <body>
@@ -222,7 +226,6 @@
     let solution = [];
     let lives = 3;
 
-    // Generate a random Sudoku puzzle
     function generateRandomPuzzle() {
       board = Array(SIZE).fill().map(() => Array(SIZE).fill(0));
       for (let k = 0; k < SIZE; k += 3) fillBox(k, k);
