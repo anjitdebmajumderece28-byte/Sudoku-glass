@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <me fta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+  font-family: "Poppins", sans-serif;
+  min-height: 100vh;
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("https://images.pexels.com/photos/388415/pexels-photo-388415.jpeg")
+    center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+
+    .container {
+  background: rgba(255, 255, 255, 0.18);     /* low opacity white */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* soft diffused shadow */
+  backdrop-filter: blur(12px) saturate(180%); /* the real “frosted” effect */
+  -webkit-backdrop-filter: blur(12px) saturate(180%); /* Safari support */
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* thin glass edge line */
+  padding: 30px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+
+    h1 {
+      color: #000000;
+      text-align: center;
+      font-size: 1.8em;
+    }
+
+    .subtitle {
+      color: #555;
+      text-align: center;
+      font-size: 0.9em;
+    }
+
+    .lives {
+      text-align: center;
+      font-weight: bold;
+      color: #e53935;
+      font-size: 1.1em;
+    }
+
+    /* Perfectly responsive Sudoku grid */
+    .sudoku-grid {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      width: 90vw;
+      max-width: 420px;
+      aspect-ratio: 1 / 1;
+      border: 3px solid #333;
+      background: #333;
+    }
+
+    .sudoku-cell {
+      border: 1px solid #999;
+      text-align: center;
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 600;
+      color: #333;
+      background: white;
+      transition: background 0.2s;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sudoku-cell:focus {
+      outline: none;
+      background: #e3f2fd;
+    }
+
+    .sudoku-cell.given {
+      background: #f5f5f5;
+      color: #000;
+      pointer-events: none;
+    }
+
+    .sudoku-cell.correct {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .sudoku-cell.wrong {
+      background: #ffebee;
+      color: #c62828;
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-4px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Thicker box borders */
+    .sudoku-cell:nth-child(3n) {
+      border-right: 3px solid #333;
+    }
+    .sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
+    .sudoku-cell:nth-child(n + 46):nth-child(-n + 54) {
+      border-bottom: 3px solid #333;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9em;
+      padding: 10px 20px;
+      color: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .new-btn {
+      background: #ff9800;
+    }
+
+    .new-btn:hover {
+      background: #f57c00;
+      transform: translateY(-2px);
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: none;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .message.error {
+      background: #ffebee;
+      color: #c62828;
+      display: block;
+    }
+
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 1.4em;
+      }
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Sudoku Game</h1>
+    <p class="subtitle">You have <span id="lives">3</span> lives!</p>
+    <div class="lives" id="livesText">❤️❤️❤️</div>
+
+    <div class="sudoku-grid" id="sudokuGrid"></div>
+
+    <div class="button-group">
+      <button class="new-btn" onclick="newPuzzle()">New Puzzle</button>
+    </div>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    const SIZE = 9;
+    let board = [];
+    let solution = [];
+    let lives = 3;
+
+    // Generate a random Sudoku puzzle
+    function generateRandomPuzzle() {
+      board = Array(SIZE).fill().map(() => Array(SIZE).fill(0));
+      for (let k = 0; k < SIZE; k += 3) fillBox(k, k);
+      solve(board);
+      solution = board.map(r => [...r]);
+      removeCells(45);
+    }
+
+    function fillBox(row, col) {
+      let nums = shuffle([1,2,3,4,5,6,7,8,9]);
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          board[row+i][col+j] = nums[i*3+j];
+        }
+      }
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function removeCells(count) {
+      let removed = 0;
+      while (removed < count) {
+        let r = Math.floor(Math.random() * SIZE);
+        let c = Math.floor(Math.random() * SIZE);
+        if (board[r][c] !== 0) {
+          board[r][c] = 0;
+          removed++;
+        }
+      }
+    }
+
+    function isValid(board, row, col, num) {
+      for (let x = 0; x < SIZE; x++) {
+        if (board[row][x] === num || board[x][col] === num) return false;
+      }
+      const sr = row - (row % 3), sc = col - (col % 3);
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (board[sr + i][sc + j] === num) return false;
+        }
+      }
+      return true;
+    }
+
+    function solve(board) {
+      for (let row = 0; row < SIZE; row++) {
+        for (let col = 0; col < SIZE; col++) {
+          if (board[row][col] === 0) {
+            for (let num = 1; num <= SIZE; num++) {
+              if (isValid(board, row, col, num)) {
+                board[row][col] = num;
+                if (solve(board)) return true;
+                board[row][col] = 0;
+              }
+            }
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function initGrid() {
+      const grid = document.getElementById("sudokuGrid");
+      grid.innerHTML = "";
+      for (let i = 0; i < SIZE * SIZE; i++) {
+        const cell = document.createElement("input");
+        cell.type = "text";
+        cell.maxLength = 1;
+        cell.className = "sudoku-cell";
+        const row = Math.floor(i / SIZE);
+        const col = i % SIZE;
+        const value = board[row][col];
+        if (value !== 0) {
+          cell.value = value;
+          cell.classList.add("given");
+          cell.disabled = true;
+        }
+        cell.addEventListener("input", () => handleInput(cell, row, col));
+        grid.appendChild(cell);
+      }
+    }
+
+    function handleInput(cell, row, col) {
+      const val = parseInt(cell.value);
+      if (isNaN(val) || val < 1 || val > 9) {
+        cell.value = "";
+        return;
+      }
+
+      if (val === solution[row][col]) {
+        cell.classList.add("correct");
+        cell.disabled = true;
+      } else {
+        lives--;
+        updateLives();
+        cell.classList.add("wrong");
+        setTimeout(() => {
+          cell.classList.remove("wrong");
+          cell.value = "";
+        }, 500);
+
+        if (lives <= 0) {
+          showMessage("💀 Game Over! Loading new puzzle...", "error");
+          setTimeout(() => newPuzzle(), 2000);
+        }
+      }
+    }
+
+    function updateLives() {
+      const livesText = document.getElementById("livesText");
+      const hearts = "❤️".repeat(lives);
+      livesText.textContent = hearts;
+      document.getElementById("lives").textContent = lives;
+    }
+
+    function newPuzzle() {
+      lives = 3;
+      updateLives();
+      generateRandomPuzzle();
+      initGrid();
+      hideMessage();
+    }
+
+    function showMessage(text, type) {
+      const msg = document.getElementById("message");
+      msg.textContent = text;
+      msg.className = `message ${type}`;
+    }
+
+    function hideMessage() {
+      document.getElementById("message").className = "message";
+    }
+
+    newPuzzle();
+  </script>
+</body>
+</html>
