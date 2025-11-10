@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!-- Rive Web Player -->
+<script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,17 +15,26 @@
     }
 
     body {
+      <canvas id="rive-bg"></canvas>
+
   font-family: "Poppins", sans-serif;
   min-height: 100vh;
   background: 
-    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url("https://images.pexels.com/photos/388415/pexels-photo-388415.jpeg")
-    center/cover no-repeat;
+
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
   overflow: hidden;
+}
+/* Make Rive animation full-screen and behind everything */
+#rive-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
 }
 
 
@@ -364,6 +376,15 @@
     }
 
     newPuzzle();
+    // 🎥 Load the Rive background
+new rive.Rive({
+  src: "background.riv",      // your downloaded file
+  canvas: document.getElementById("rive-bg"),
+  autoplay: true,
+  stateMachines: "State Machine 1", // Optional: name of your state machine
+  fit: rive.Fit.COVER,              // scales to fill screen
+});
+
   </script>
 </body>
 </html>
