@@ -167,14 +167,35 @@
       display: block;
     }
 
-    @media (max-width: 400px) {
-      h1 {
-        font-size: 1.4em;
-      }
-      .container {
-        padding: 15px;
-      }
-    }
+   @media (max-width: 400px) {
+  h1 {
+    font-size: 1.3em;
+  }
+
+  .container {
+    padding: 10px; /* reduced from 15px */
+    border-radius: 15px;
+  }
+
+  .sudoku-grid {
+    width: 95vw; /* let it use more width on small screens */
+    max-width: none; /* remove the cap */
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 0.85em;
+  }
+
+  .subtitle {
+    font-size: 0.8em;
+  }
+
+  .lives {
+    font-size: 1em;
+  }
+}
+
   </style>
 </head>
 <body>
