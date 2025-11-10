@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎯 Sudoku Game</title>
 
-  <!-- Rive runtime -->
-  <script src="https://unpkg.com/@rive-app/canvas@2.7.0"></script>
+  <!-- Coolors Palette -->
+  <script src="https://coolors.co/palette-widget/widget.js"></script>
+  <script data-id="010592446386900334">
+    new CoolorsPaletteWidget("010592446386900334", ["1f2421","216869","49a078","9cc5a1","dce1de"]);
+  </script>
 
   <style>
     * {
@@ -21,97 +24,104 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      background: linear-gradient(135deg, #1f2421, #216869, #49a078);
+      background-size: 300% 300%;
+      animation: gradientFlow 8s ease infinite;
+      color: #1f2421;
       overflow: hidden;
     }
 
-    /* 🎥 Rive background canvas */
-    #rive-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    /* 🎯 Sudoku Container */
     .container {
-      background: rgba(255, 255, 255, 0.18);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      backdrop-filter: blur(12px) saturate(180%);
-      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 30px;
+      padding: 35px 25px;
       width: 100%;
-      max-width: 480px;
+      max-width: 500px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .container:hover {
+      transform: scale(1.01);
+      box-shadow: 0 12px 45px rgba(0, 0, 0, 0.3);
     }
 
     h1 {
-      color: #000;
+      color: #dce1de;
       text-align: center;
-      font-size: 1.8em;
+      font-size: 1.9em;
+      letter-spacing: 1px;
     }
 
     .subtitle {
-      color: #555;
+      color: #9cc5a1;
       text-align: center;
-      font-size: 0.9em;
+      font-size: 0.95em;
     }
 
     .lives {
       text-align: center;
-      font-weight: bold;
-      color: #e53935;
+      font-weight: 600;
+      color: #ff6b6b;
       font-size: 1.1em;
     }
 
-    /* 🧩 Sudoku Grid */
     .sudoku-grid {
       display: grid;
       grid-template-columns: repeat(9, 1fr);
       width: 90vw;
       max-width: 420px;
       aspect-ratio: 1 / 1;
-      border: 3px solid #333;
-      background: #333;
+      border: 3px solid #216869;
+      background: #216869;
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     .sudoku-cell {
-      border: 1px solid #999;
+      border: 1px solid #9cc5a1;
       text-align: center;
       font-size: clamp(1rem, 2vw, 1.4rem);
       font-weight: 600;
-      color: #333;
-      background: white;
-      transition: background 0.2s;
-      width: 100%;
-      height: 100%;
+      color: #1f2421;
+      background: #dce1de;
+      transition: all 0.25s ease;
     }
 
     .sudoku-cell:focus {
       outline: none;
-      background: #e3f2fd;
+      background: #9cc5a1;
+      color: #fff;
     }
 
     .sudoku-cell.given {
-      background: #f5f5f5;
-      color: #000;
+      background: #49a078;
+      color: #fff;
       pointer-events: none;
+      font-weight: bold;
     }
 
     .sudoku-cell.correct {
-      background: #e8f5e9;
-      color: #2e7d32;
+      background: #9cc5a1;
+      color: #fff;
     }
 
     .sudoku-cell.wrong {
-      background: #ffebee;
-      color: #c62828;
+      background: #ff6b6b;
+      color: #fff;
       animation: shake 0.3s;
     }
 
@@ -123,19 +133,11 @@
       100% { transform: translateX(0); }
     }
 
-    /* Thicker box borders */
-    .sudoku-cell:nth-child(3n) {
-      border-right: 3px solid #333;
-    }
-    .sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
-    .sudoku-cell:nth-child(n + 46):nth-child(-n + 54) {
-      border-bottom: 3px solid #333;
-    }
-
     .button-group {
       display: flex;
       justify-content: center;
       margin-top: 10px;
+      gap: 10px;
     }
 
     button {
@@ -143,19 +145,17 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.9em;
-      padding: 10px 20px;
+      font-size: 0.95em;
+      padding: 12px 25px;
       color: white;
-      transition: transform 0.2s, box-shadow 0.2s;
+      background: linear-gradient(90deg, #216869, #49a078);
+      transition: all 0.3s ease;
     }
 
-    .new-btn {
-      background: #ff9800;
-    }
-
-    .new-btn:hover {
-      background: #f57c00;
-      transform: translateY(-2px);
+    button:hover {
+      background: linear-gradient(90deg, #49a078, #216869);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
 
     .message {
@@ -170,62 +170,25 @@
     }
 
     .message.error {
-      background: #ffebee;
-      color: #c62828;
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
       display: block;
     }
 
-    /* 📱 Responsive design */
     @media (max-width: 600px) {
-      body {
-        padding: 0;
-      }
-
-      .container {
-        padding: 10px;
-        max-width: 95vw;
-        border-radius: 16px;
-      }
-
-      .sudoku-grid {
-        width: 95vw;
-        max-width: none;
-      }
-
-      h1 {
-        font-size: 1.5em;
-      }
-
-      button {
-        padding: 12px 18px;
-        font-size: 1em;
-      }
+      body { padding: 0; }
+      .container { padding: 20px; max-width: 95vw; }
+      .sudoku-grid { width: 95vw; }
+      h1 { font-size: 1.6em; }
     }
 
     @media (max-width: 400px) {
-      .container {
-        padding: 8px;
-      }
-
-      .sudoku-grid {
-        width: 96vw;
-      }
-
-      h1 {
-        font-size: 1.3em;
-      }
-
-      .sudoku-cell {
-        font-size: clamp(0.9rem, 4vw, 1.2rem);
-      }
+      h1 { font-size: 1.3em; }
+      .container { padding: 15px; }
     }
   </style>
 </head>
 <body>
-  <!-- 🎥 Rive background -->
-  <canvas id="rive-bg"></canvas>
-
-  <!-- 🎯 Sudoku container -->
   <div class="container">
     <h1>🎯 Sudoku Game</h1>
     <p class="subtitle">You have <span id="lives">3</span> lives!</p>
@@ -234,22 +197,13 @@
     <div class="sudoku-grid" id="sudokuGrid"></div>
 
     <div class="button-group">
-      <button class="new-btn" onclick="newPuzzle()">New Puzzle</button>
+      <button onclick="newPuzzle()">New Puzzle</button>
     </div>
 
     <div id="message" class="message"></div>
   </div>
 
   <script>
-    // 🎥 Initialize Rive background
-    new rive.Rive({
-      src: "22580-42245-nature.riv", // your downloaded Rive file
-      canvas: document.getElementById("rive-bg"),
-      autoplay: true,
-      fit: rive.Fit.COVER
-    });
-
-    // 🧩 Sudoku logic
     const SIZE = 9;
     let board = [];
     let solution = [];
