@@ -1,12 +1,21 @@
-<!-- uploaded file (dev instruction): /mnt/data/c7b57b0b-8bed-4241-9f20-90132a36ebf8.png -->
-
+<!-- uploaded file: /mnt/data/c7b57b0b-8bed-4241-9f20-90132a36ebf8.png -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sudoku — Clean Modern</title>
+
+  <!-- Font embed provided by user -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <style>
+    *{ font-family: 'Press Start 2P', system-ui, -apple-system, 'Segoe UI', Roboto, Arial !important; }
+    /* user-provided class, adjusted and applied globally */
+    .press-start-2p-regular { font-family: 'Press Start 2P', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; font-weight:400; font-style:normal; }
+
     :root{
       --bg: #F6F7F8;
       --card: #FFFFFF;
@@ -28,8 +37,8 @@
     /* ---------- Base ---------- */
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
-    body{
-      font-family: Inter, "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    body{ /* apply the press-start font globally */
+      font-family: 'Press Start 2P', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
       background:var(--bg);
       color:var(--fg);
       display:flex;
@@ -82,11 +91,11 @@
 
     .header{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
     .title-wrap{ display:flex; flex-direction:column; gap:2px; }
-    .title{ font-weight:800; font-size:18px; letter-spacing:-0.2px; }
-    .subtitle{ font-size:12px; color:var(--muted); font-weight:700; }
+    .title{ font-weight:700; font-size:18px; letter-spacing:0; }
+    .subtitle{ font-size:10px; color:var(--muted); font-weight:700; }
 
     .meta{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:6px; }
-    .lives{ display:flex; align-items:center; gap:8px; color:var(--muted); font-weight:700; }
+    .lives{ display:flex; align-items:center; gap:8px; color:var(--muted); font-weight:700; font-size:10px }
     .hearts{ display:flex; gap:6px; }
     .heart{ width:12px; height:12px; border-radius:3px; background:var(--accent-2);
       mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 21s-7-4.35-9.17-7.09C1.25 11.97 2.4 8.5 5.5 7.5 7 6.9 8.5 7.5 9 8.6 9.5 7.5 11 6.9 12.5 7.5c3.1 1 4.25 4.47 2.67 6.41C19 16.65 12 21 12 21z"/></svg>') center / contain no-repeat;
@@ -113,7 +122,7 @@
     /* thinner, sleeker lines */
     .sudoku .cell{
       display:flex; align-items:center; justify-content:center; padding:0;
-      font-weight:700; font-size:1.02rem; color:var(--fg);
+      font-weight:700; font-size:0.7rem; color:var(--fg);
       border-right:1px solid rgba(12,22,12,0.045);
       border-bottom:1px solid rgba(12,22,12,0.045);
       transition: box-shadow 140ms ease, background 120ms ease;
@@ -131,7 +140,7 @@
 
     .cell input.value{
       width:100%; height:100%; border:0; background:transparent; text-align:center;
-      font-weight:800; font-size:1.05rem; caret-color:var(--accent-2);
+      font-weight:700; font-size:0.75rem; caret-color:var(--accent-2);
       outline:none; -webkit-appearance:none; appearance:none; border-radius:0; padding-top:2px; color:inherit;
     }
     .cell input.value::-moz-focus-inner{ border:0; padding:0; }
@@ -143,9 +152,13 @@
     /* ---------- Controls & numpad ---------- */
     .controls{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:6px; padding-top:6px; }
     .controls .left, .controls .right{ display:flex; gap:8px; align-items:center; }
-    .btn{ background:var(--accent); color:white; padding:9px 12px; border-radius:10px; font-weight:800; border:0; cursor:pointer; box-shadow:0 8px 18px rgba(36,107,59,0.10); transition: transform 120ms ease, opacity 120ms ease; }
+
+    /* space out the three buttons evenly: use fixed container width and space-between */
+    .controls .left{ display:flex; gap:4px; align-items:center; width:240px; justify-content:space-between; }
+
+    .btn{ background:var(--accent); color:white; padding:9px 12px; border-radius:10px; font-weight:700; border:0; cursor:pointer; box-shadow:0 8px 18px rgba(36,107,59,0.10); transition: transform 120ms ease, opacity 120ms ease; font-size:10px }
     .btn.ghost{ background:transparent; color:var(--fg); border:1px solid rgba(0,0,0,0.04); box-shadow:none; font-weight:700; }
-    .btn.small{ padding:8px 10px; font-size:0.92rem; }
+    .btn.small{ padding:8px 10px; font-size:9px; }
 
     /* hint pill: solid color, less border radius (6px) */
     .hint-pill{
@@ -160,18 +173,18 @@
       box-shadow: 0 8px 24px rgba(36,107,59,0.12);
       cursor:pointer;
       border: 0;
+      font-size:10px;
     }
     .hint-pill .icon{
       width:18px; height:18px; border-radius:6px; background: rgba(255,255,255,0.12); display:inline-flex; align-items:center; justify-content:center; font-size:12px;
     }
 
-    .message{ font-size:13px; color:var(--muted); text-align:center; padding:6px 0 2px 0; }
+    .message{ font-size:10px; color:var(--muted); text-align:center; padding:6px 0 2px 0; }
 
     .aside{ width:340px; display:flex; align-items:center; justify-content:center; min-height: calc(100vh - 160px); z-index:1; }
-    .numpad{ width:300px; padding:14px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88)); box-shadow:var(--shadow-sm); border:1px solid rgba(0,0,0,0.03);
-      display:grid; grid-template-columns:repeat(3,1fr); gap:12px; align-items:center; justify-items:stretch; }
+    .numpad{ width:300px; padding:10px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88)); box-shadow:var(--shadow-sm); border:1px solid rgba(0,0,0,0.03); display:grid; grid-template-columns:repeat(3, 1fr); grid-auto-rows:64px; gap:12px; align-items:stretch; justify-items:stretch; box-sizing:border-box; }
 
-    .numpad button{ border-radius:10px; padding:12px; background:var(--accent); color:white; font-weight:800; font-size:1.0rem; border:0; cursor:pointer; transition: transform 120ms ease; box-shadow:none; }
+    .numpad button{ width:100%; height:100%; min-width:0; min-height:0; box-sizing:border-box; border-radius:10px; padding:10px; background:var(--accent); color:white; font-weight:700; font-size:12px; line-height:1; border:0; cursor:pointer; transition: transform 120ms ease; box-shadow:none; display:flex; align-items:center; justify-content:center; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
     .numpad button.action{ background:transparent; color:var(--fg); border:1px solid rgba(0,0,0,0.04); font-weight:700; }
 
     @media (max-width:940px){
@@ -182,6 +195,7 @@
       .sudoku{ width:92vw; max-width:420px; height:92vw; }
       .aside{ width:92vw; min-height:auto; }
       .numpad{ width:92vw; max-width:420px; grid-template-columns: repeat(3, 1fr); }
+      .controls .left{ width:100%; }
     }
 
     @media (prefers-reduced-motion:reduce){ *{ transition:none!important; } }
@@ -190,7 +204,7 @@
   </style>
 </head>
 <body>
-  <div class="wrap" role="application" aria-label="Sudoku game">
+  <div class="wrap press-start-2p-regular" role="application" aria-label="Sudoku game">
     <div class="card" aria-live="polite">
       <div class="header">
         <div class="title-wrap">
@@ -219,8 +233,7 @@
           <button id="clearBtn2" class="btn ghost small">Clear</button>
         </div>
         <div class="right">
-          <button id="undoBtn" class="btn ghost small">Undo</button>
-          <button id="redoBtn" class="btn ghost small">Redo</button>
+          <!-- Undo / Redo removed as requested -->
         </div>
       </div>
 
@@ -240,7 +253,7 @@
   </div>
 
   <script>
-    /* Clean sudoku (theme removed, hint pill solid, no pencil notes) */
+    /* Clean sudoku (undo/redo removed, theme removed, hint pill solid, no pencil notes) */
     const SIZE = 9;
     let board = [];
     let solution = [];
@@ -248,8 +261,6 @@
     let lives = 3;
     let hintsLeft = 3;
     let selectedCell = null;
-    let historyStack = [];
-    let redoStack = [];
 
     const sudokuEl = document.getElementById('sudoku');
     const livesText = document.getElementById('livesText');
@@ -319,7 +330,6 @@
         input.disabled=true;
         input.parentElement.classList.add('correct');
         input.parentElement.classList.remove('active');
-        pushHistory({type:'fill',row,col,prev:0,new:val});
         selectedCell=null;
       } else {
         lives--; updateLives();
@@ -329,11 +339,7 @@
       }
     }
 
-    function clearSelected(){
-      if(!selectedCell) return;
-      const inp = selectedCell.el.querySelector('input.value');
-      if(inp && !inp.disabled) inp.value='';
-    }
+    function clearSelected(){ if(!selectedCell) return; const inp = selectedCell.el.querySelector('input.value'); if(inp && !inp.disabled) inp.value=''; }
 
     function updateLives(){ livesText.innerHTML=''; for(let i=0;i<lives;i++){ const h=document.createElement('span'); h.className='heart'; livesText.appendChild(h);} document.getElementById('lives').textContent=lives; }
 
@@ -348,20 +354,15 @@
       inp.value = solution[r][c];
       inp.disabled = true;
       selectedCell.el.classList.add('correct');
-      pushHistory({type:'hint',row:r,col:c,prev:0,new:solution[r][c]});
       selectedCell=null;
       hintsLeft--; updateHintDisplay();
     }
 
     function updateHintDisplay(){ hintCountEl.textContent=hintsLeft; }
 
-    function pushHistory(act){ historyStack.push(act); if(historyStack.length>300) historyStack.shift(); redoStack=[]; }
-    function undo(){ if(historyStack.length===0){ showMessage('Nothing to undo'); return; } const act=historyStack.pop(); redoStack.push(JSON.parse(JSON.stringify(act))); if(act.type==='fill' || act.type==='hint'){ const idx=act.row*9+act.col; const cell=sudokuEl.children[idx]; const inp=cell.querySelector('input.value'); inp.value = act.prev || ''; inp.disabled = !!(act.prev && act.prev!==0); cell.classList.toggle('correct', inp.disabled); } }
-    function redo(){ if(redoStack.length===0){ showMessage('Nothing to redo'); return; } const act=redoStack.pop(); historyStack.push(JSON.parse(JSON.stringify(act))); if(act.type==='fill' || act.type==='hint'){ const idx=act.row*9+act.col; const cell=sudokuEl.children[idx]; const inp=cell.querySelector('input.value'); inp.value = act.new || ''; inp.disabled = !!(act.new && act.new!==0); cell.classList.toggle('correct', inp.disabled); } }
-
     function revealSolution(){ for(let r=0;r<9;r++){ for(let c=0;c<9;c++){ const idx=r*9+c; const cell=sudokuEl.children[idx]; const inp=cell.querySelector('input.value'); inp.value = solution[r][c]; inp.disabled=true; cell.classList.add('correct'); } } }
-    function newPuzzle(){ lives=3; hintsLeft=3; historyStack=[]; redoStack=[]; updateLives(); updateHintDisplay(); generateRandomPuzzle(); initGrid(); showMessage('New puzzle — good luck!'); selectedCell=null; }
-    function clearAll(){ for(let i=0;i<81;i++){ const cell=sudokuEl.children[i]; const inp=cell.querySelector('input.value'); if(inp && !inp.disabled) inp.value=''; cell.classList.remove('correct','wrong','active'); } historyStack=[]; redoStack=[]; }
+    function newPuzzle(){ lives=3; hintsLeft=3; updateLives(); updateHintDisplay(); generateRandomPuzzle(); initGrid(); showMessage('New puzzle — good luck!'); selectedCell=null; }
+    function clearAll(){ for(let i=0;i<81;i++){ const cell=sudokuEl.children[i]; const inp=cell.querySelector('input.value'); if(inp && !inp.disabled) inp.value=''; cell.classList.remove('correct','wrong','active'); } }
 
     // numpad interactions
     document.getElementById('numpad').addEventListener('click',(e)=>{
@@ -376,8 +377,6 @@
     // controls
     document.getElementById('newBtn').addEventListener('click', newPuzzle);
     document.getElementById('solveBtn').addEventListener('click', ()=>{ revealSolution(); showMessage('Solution revealed'); });
-    document.getElementById('undoBtn').addEventListener('click', undo);
-    document.getElementById('redoBtn').addEventListener('click', redo);
     document.getElementById('clearBtn2').addEventListener('click', clearAll);
     hintPill.addEventListener('click', giveHint);
     document.getElementById('hintBtnMain').addEventListener('click', giveHint);
