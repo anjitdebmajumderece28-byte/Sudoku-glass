@@ -16,7 +16,6 @@
 
   <style>
     *{ font-family: 'Press Start 2P', system-ui, -apple-system, 'Segoe UI', Roboto, Arial !important; }
-    /* user-provided class, adjusted and applied globally */
     .press-start-2p-regular { font-family: 'Press Start 2P', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; font-weight:400; font-style:normal; }
 
     :root{
@@ -24,8 +23,8 @@
       --card: #FFFFFF;
       --muted: #9AA39A;
       --fg: #0F2614;
-      --accent: #246B3B;         /* primary UI color */
-      --accent-2: #5FA86B;       /* secondary */
+      --accent: #246B3B;
+      --accent-2: #5FA86B;
       --glass: rgba(255,255,255,0.72);
       --shadow-sm: 0 6px 20px rgba(15,18,20,0.06);
       --shadow-lg: 0 24px 48px rgba(8,12,14,0.08);
@@ -34,25 +33,20 @@
       --success: rgba(37,135,70,0.10);
       --danger: rgba(190,50,50,0.08);
       --focus: rgba(37,135,70,0.12);
-      --board-size: 400px;      /* selected size */
+      --board-size: 400px;
     }
 
-    /* ---------- Base ---------- */
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
 
-    /* --- Protect against forced dark heuristics and hint light scheme --- */
     html{
-      /* tell the UA this page is explicitly light themed */
       color-scheme: light;
-      /* prevent some engines from altering colors (Chrome/Android forced-dark) */
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
     }
 
-    body{ /* apply the press-start font globally */
+    body{
       font-family: 'Press Start 2P', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-      /* use explicit background-color rather than shorthand to be robust vs forced-dark */
       background-color: var(--bg);
       background-image: none;
       color:var(--fg);
@@ -81,7 +75,6 @@
       top:0;
       height:100%;
       width:calc(50% + 260px);
-      /* be explicit with background-color to avoid heuristic recolor */
       background-color: var(--glass);
       border-radius:18px;
       filter: blur(8px);
@@ -90,7 +83,6 @@
       opacity:0.98;
     }
 
-    /* ---------- Card ---------- */
     .card{
       width:520px;
       background:var(--card);
@@ -118,7 +110,6 @@
       box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
     }
 
-    /* ---------- Board (400px) ---------- */
     .board-wrap{ display:flex; justify-content:center; align-items:center; padding:8px; }
     .sudoku{
       width:var(--board-size);
@@ -135,7 +126,6 @@
       border:1px solid rgba(0,0,0,0.03);
     }
 
-    /* thinner, sleeker lines */
     .sudoku .cell{
       display:flex; align-items:center; justify-content:center; padding:0;
       font-weight:700; font-size:0.7rem; color:var(--fg);
@@ -143,6 +133,8 @@
       border-bottom:1px solid rgba(12,22,12,0.045);
       transition: box-shadow 140ms ease, background 120ms ease;
       min-width:0; min-height:0; position:relative; background:transparent;
+      cursor:pointer;
+      outline: none;
     }
     .sudoku .cell:nth-child(9n){ border-right:0; }
     .sudoku .cell:nth-last-child(-n+9){ border-bottom:0; }
@@ -156,34 +148,31 @@
 
     .cell input.value{
       width:100%; height:100%; border:0; background:transparent; text-align:center;
-      font-weight:700; font-size:0.75rem; caret-color:var(--accent-2);
+      font-weight:700; font-size:0.75rem; caret-color:transparent; /* hide caret so no blink */
       outline:none; -webkit-appearance:none; appearance:none; border-radius:0; padding-top:2px; color:inherit;
+      pointer-events:none; /* make the input non-interactive: user interacts with cell div */
     }
-    .cell input.value::-moz-focus-inner{ border:0; padding:0; }
-    .cell input.value:focus{ outline:none; box-shadow:none; }
+    .cell input.value[readonly]{ -webkit-user-select: none; user-select:none; }
 
     .cell:hover:not(.given){ background: rgba(37,135,70,0.02); box-shadow: 0 6px 16px rgba(8,12,14,0.04); z-index:2; }
     .cell.active{ box-shadow: 0 14px 36px rgba(8,12,14,0.06); outline: 3px solid var(--focus); z-index:3; }
 
-    /* ---------- Controls & numpad ---------- */
     .controls{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:6px; padding-top:6px; }
     .controls .left, .controls .right{ display:flex; gap:8px; align-items:center; }
 
-    /* space out the three buttons evenly: use fixed container width and space-between */
     .controls .left{ display:flex; gap:4px; align-items:center; width:240px; justify-content:space-between; }
 
     .btn{ background:var(--accent); color:white; padding:9px 12px; border-radius:10px; font-weight:700; border:0; cursor:pointer; box-shadow:0 8px 18px rgba(36,107,59,0.10); transition: transform 120ms ease, opacity 120ms ease; font-size:10px }
     .btn.ghost{ background:transparent; color:var(--fg); border:1px solid rgba(0,0,0,0.04); box-shadow:none; font-weight:700; }
     .btn.small{ padding:8px 10px; font-size:9px; }
 
-    /* hint pill: solid color, less border radius (6px) */
     .hint-pill{
       display:inline-flex;
       align-items:center;
       gap:10px;
       padding:8px 12px;
-      border-radius:6px;                 /* 6px as requested */
-      background: var(--accent);         /* solid primary color */
+      border-radius:6px;
+      background: var(--accent);
       color: #fff;
       font-weight:800;
       box-shadow: 0 8px 24px rgba(36,107,59,0.12);
@@ -200,7 +189,6 @@
     .aside{ width:340px; display:flex; align-items:center; justify-content:center; min-height: calc(100vh - 160px); z-index:1; }
     .numpad{
       width:300px; padding:10px; border-radius:12px;
-      /* explicit fallback background-color + gradient image */
       background-color: rgba(255,255,255,0.92);
       background-image: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88));
       box-shadow:var(--shadow-sm); border:1px solid rgba(0,0,0,0.03); display:grid; grid-template-columns:repeat(3, 1fr); grid-auto-rows:64px; gap:12px; align-items:stretch; justify-items:stretch; box-sizing:border-box;
@@ -222,7 +210,6 @@
 
     @media (prefers-reduced-motion:reduce){ *{ transition:none!important; } }
 
-    /* Defensive: if device/browser prefers dark, enforce our light palette */
     @media (prefers-color-scheme: dark) {
       html { color-scheme: light; }
       body { background-color: var(--bg); color: var(--fg); }
@@ -263,7 +250,6 @@
           <button id="clearBtn2" class="btn ghost small">Clear</button>
         </div>
         <div class="right">
-          <!-- Undo / Redo removed as requested -->
         </div>
       </div>
 
@@ -283,7 +269,7 @@
   </div>
 
   <script>
-    /* Clean sudoku (undo/redo removed, theme removed, hint pill solid, no pencil notes) */
+    /* Prevent mobile keyboard: inputs are readonly and non-interactive; user uses the in-game numpad or physical keyboard */
     const SIZE = 9;
     let board = [];
     let solution = [];
@@ -313,19 +299,25 @@
           const cell = document.createElement('div');
           cell.className='cell';
           cell.dataset.r=r; cell.dataset.c=c;
+          cell.tabIndex = 0; // allow keyboard focus on desktop if needed
           const val = board[r][c];
           if(val!==0){
             const input = document.createElement('input'); input.className='value'; input.value=val; input.disabled=true;
-            input.setAttribute('aria-label', `Cell ${r+1}-${c+1}`); cell.appendChild(input); cell.classList.add('given');
+            input.setAttribute('aria-label', `Cell ${r+1}-${c+1}`); input.setAttribute('readonly',''); input.setAttribute('inputmode','none');
+            cell.appendChild(input); cell.classList.add('given');
           } else {
             const input = document.createElement('input'); input.className='value';
-            input.type='text'; input.inputMode='numeric'; input.maxLength=1; input.autocomplete='off';
+            input.type='text'; input.readOnly = true; input.inputMode='none'; input.maxLength=1; input.autocomplete='off';
             input.style.display='block';
             input.setAttribute('aria-label', `Cell ${r+1}-${c+1}`);
-            input.addEventListener('focus', ()=>setSelected(cell,r,c));
-            input.addEventListener('click', ()=>setSelected(cell,r,c));
-            input.addEventListener('input', ()=>handleInput(input,r,c));
-            input.addEventListener('keydown', onCellKeyDown);
+            // make input non-interactive so mobile won't open keyboard; we handle selection on the cell
+            input.disabled = false; // keep enabled so value is visible and can be changed by JS
+            input.setAttribute('readonly','');
+            // click/touch on the cell div selects — do NOT focus the input (prevents keyboard)
+            cell.addEventListener('click', ()=>setSelected(cell,r,c));
+            cell.addEventListener('touchstart', (ev)=>{ ev.preventDefault(); setSelected(cell,r,c); }, {passive:false});
+            // support keyboard focus navigation on desktop: allow Enter/number keys via document-level handler
+            cell.addEventListener('keydown', (e)=>{ /* keep for accessibility but primary keyboard handling is on document */ });
             cell.appendChild(input);
           }
           sudokuEl.appendChild(cell);
@@ -337,39 +329,47 @@
       document.querySelectorAll('.sudoku .cell').forEach(c=>c.classList.remove('active'));
       el.classList.add('active');
       selectedCell={row,col,el};
-      const inp = el.querySelector('input.value'); if(inp) inp.focus();
+      // IMPORTANT: do NOT focus the input (that would open mobile keyboard). We intentionally focus the cell div instead.
+      try{ el.focus(); }catch(e){}
     }
 
-    function onCellKeyDown(e){
-      if(!selectedCell) return;
-      const r=selectedCell.row, c=selectedCell.col;
-      if(e.key==='ArrowUp'){ e.preventDefault(); focusCell(Math.max(0,r-1),c); }
-      if(e.key==='ArrowDown'){ e.preventDefault(); focusCell(Math.min(8,r+1),c); }
-      if(e.key==='ArrowLeft'){ e.preventDefault(); focusCell(r,Math.max(0,c-1)); }
-      if(e.key==='ArrowRight'){ e.preventDefault(); focusCell(r,Math.min(8,c+1)); }
-      if(e.key==='Backspace' || e.key==='Delete'){ e.preventDefault(); clearSelected(); }
-      if(e.key>='1' && e.key<='9'){ const n=parseInt(e.key); const inp=selectedCell.el.querySelector('input.value'); if(inp) { inp.value=n; handleInput(inp,r,c); } }
-    }
+    // Handle physical keyboard input (desktop) + delete/backspace + arrows
+    document.addEventListener('keydown', (e)=>{
+      if(!selectedCell) {
+        if(e.key === 'Enter') focusFirstEmpty();
+        return;
+      }
+      const r = selectedCell.row, c = selectedCell.col;
+      if(e.key==='ArrowUp'){ e.preventDefault(); focusCell(Math.max(0,r-1),c); return; }
+      if(e.key==='ArrowDown'){ e.preventDefault(); focusCell(Math.min(8,r+1),c); return; }
+      if(e.key==='ArrowLeft'){ e.preventDefault(); focusCell(r,Math.max(0,c-1)); return; }
+      if(e.key==='ArrowRight'){ e.preventDefault(); focusCell(r,Math.min(8,c+1)); return; }
+      if(e.key==='Backspace' || e.key==='Delete'){ e.preventDefault(); clearSelected(); return; }
+      if(e.key>='1' && e.key<='9'){ const n = parseInt(e.key); enterNumber(n, r, c); return; }
+    });
 
-    function focusCell(r,c){ const idx=r*9+c; const target=sudokuEl.children[idx]; if(target){ const inp=target.querySelector('input.value'); setSelected(target,r,c); if(inp) inp.focus(); } }
-
-    function handleInput(input,row,col){
-      const val = parseInt(input.value);
-      if(isNaN(val) || val<1 || val>9){ input.value=''; return; }
-      if(val===solution[row][col]){
-        input.disabled=true;
-        input.parentElement.classList.add('correct');
-        input.parentElement.classList.remove('active');
-        selectedCell=null;
+    function enterNumber(n, row, col){
+      const idx = row*9 + col;
+      const cell = sudokuEl.children[idx];
+      if(!cell) return;
+      const inp = cell.querySelector('input.value');
+      if(!inp || inp.disabled) return;
+      // place value & validate
+      inp.value = n;
+      if(n === solution[row][col]){
+        inp.disabled=true;
+        cell.classList.add('correct');
+        cell.classList.remove('active');
+        selectedCell = null;
       } else {
         lives--; updateLives();
-        input.parentElement.classList.add('wrong');
-        setTimeout(()=>{ input.parentElement.classList.remove('wrong'); input.value=''; },500);
+        cell.classList.add('wrong');
+        setTimeout(()=>{ cell.classList.remove('wrong'); inp.value=''; },500);
         if(lives<=0){ showMessage('💀 Game Over — new puzzle loading...','error'); setTimeout(()=>newPuzzle(),1200); }
       }
     }
 
-    function clearSelected(){ if(!selectedCell) return; const inp = selectedCell.el.querySelector('input.value'); if(inp && !inp.disabled) inp.value=''; }
+    function clearSelected(){ if(!selectedCell) return; const inp = selectedCell.el.querySelector('input.value'); if(inp && !inp.disabled) inp.value=''; selectedCell.el.classList.remove('active'); selectedCell=null; }
 
     function updateLives(){ livesText.innerHTML=''; for(let i=0;i<lives;i++){ const h=document.createElement('span'); h.className='heart'; livesText.appendChild(h);} document.getElementById('lives').textContent=lives; }
 
@@ -390,7 +390,7 @@
 
     function updateHintDisplay(){ hintCountEl.textContent=hintsLeft; }
 
-    function revealSolution(){ for(let r=0;r<9;r++){ for(let c=0;c<9;c++){ const idx=r*9+c; const cell=sudokuEl.children[idx]; const inp=cell.querySelector('input.value'); inp.value = solution[r][c]; inp.disabled=true; cell.classList.add('correct'); } } }
+    function revealSolution(){ for(let r=0;r<9;r++){ for(let c=0;c<9;c++){ const idx=r*9+c; const cell=sudokuEl.children[idx]; const inp=cell.querySelector('input.value'); if(inp){ inp.value = solution[r][c]; inp.disabled=true; cell.classList.add('correct'); } } } }
     function newPuzzle(){ lives=3; hintsLeft=3; updateLives(); updateHintDisplay(); generateRandomPuzzle(); initGrid(); showMessage('New puzzle — good luck!'); selectedCell=null; }
     function clearAll(){ for(let i=0;i<81;i++){ const cell=sudokuEl.children[i]; const inp=cell.querySelector('input.value'); if(inp && !inp.disabled) inp.value=''; cell.classList.remove('correct','wrong','active'); } }
 
@@ -401,7 +401,7 @@
       if(btn.id==='clearBtn'){ clearSelected(); return; }
       if(btn.id==='backBtn'){ clearSelected(); return; }
       if(btn.id==='hintBtnMain'){ giveHint(); return; }
-      if(n){ if(!selectedCell){ showMessage('Select a cell first!','error'); return; } const inp=selectedCell.el.querySelector('input.value'); if(inp && !inp.disabled){ inp.value = n; handleInput(inp, selectedCell.row, selectedCell.col); } }
+      if(n){ if(!selectedCell){ showMessage('Select a cell first!','error'); return; } enterNumber(parseInt(n), selectedCell.row, selectedCell.col); }
     });
 
     // controls
@@ -420,11 +420,9 @@
 
     window.sudoku = { newPuzzle, revealSolution, getBoard: ()=>board.map(r=>r.slice()), getSolution: ()=>solution.map(r=>r.slice()) };
 
-    document.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !selectedCell) focusFirstEmpty(); });
-
     // helpers
     function focusFirstEmpty(){ for(let r=0;r<9;r++) for(let c=0;c<9;c++) if(board[r][c]===0){ focusCell(r,c); return; } }
-    function focusCell(r,c){ const idx=r*9+c; const target=sudokuEl.children[idx]; if(target){ const inp=target.querySelector('input.value'); setSelected(target,r,c); if(inp) inp.focus(); } }
+    function focusCell(r,c){ const idx=r*9+c; const target=sudokuEl.children[idx]; if(target){ setSelected(target,r,c); } }
   </script>
 </body>
 </html>
